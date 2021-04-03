@@ -74,8 +74,14 @@ public abstract class Task<P, R> {
      */
     public CompletableFuture<R> runAsync(Executor executor) {
         return (backingFuture = executor == null
-                ? CompletableFuture.supplyAsync(this::run)
-                : CompletableFuture.supplyAsync(this::run, executor));
+                ? CompletableFuture.supplyAsync(this::run).exceptionally((t) -> {
+                    if (result.hasBeenSet()) return result.get();
+                    throw new RuntimeException(t);
+                })
+                : CompletableFuture.supplyAsync(this::run, executor)).exceptionally((t) -> {
+                    if (result.hasBeenSet()) return result.get();
+                    throw new RuntimeException(t);
+                });
     }
 
     /**
@@ -83,9 +89,9 @@ public abstract class Task<P, R> {
      * Cancels this task if it is running asynchronously, generating an {@link InterruptedException}.
      */
     public void cancel() {
+        result.set(null);
         if (backingFuture != null)
             backingFuture.completeExceptionally(new InterruptedException("Task was forcibly cancelled."));
-        result.set(null);
     }
 
     /**
