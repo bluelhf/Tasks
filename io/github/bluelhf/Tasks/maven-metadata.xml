@@ -3,10 +3,11 @@
   <groupId>io.github.bluelhf</groupId>
   <artifactId>Tasks</artifactId>
   <versioning>
-    <release>0000</release>
+    <release>0001</release>
     <versions>
       <version>0000</version>
+      <version>0001</version>
     </versions>
-    <lastUpdated>20210403180051</lastUpdated>
+    <lastUpdated>20210403233647</lastUpdated>
   </versioning>
 </metadata>
